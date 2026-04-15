@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\DTO\CreateProductInput;
+use App\Entity\Product;
 use App\Repository\ProductRepository;
 
 class ProductService
@@ -16,5 +18,17 @@ class ProductService
     public function findById(int $id): ?object
     {
         return $this->productRepository->find($id);
+    }
+
+    public function createProduct(CreateProductInput $input): Product
+    {
+        $product = new Product();
+        $product->setName($input->name);
+        $product->setPrice((string) $input->price);
+        $product->setStock($input->stock);
+
+        $this->productRepository->save($product);
+
+        return $product;
     }
 }

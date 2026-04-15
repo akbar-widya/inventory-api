@@ -12,4 +12,12 @@ class ProductRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Product::class);
     }
+
+    public function save(Product $product, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($product);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
 }
