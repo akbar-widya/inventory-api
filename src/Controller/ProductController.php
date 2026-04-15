@@ -70,7 +70,9 @@ class ProductController extends AbstractController
             return $this->json(['errors' => $messages], 422);
         }
 
-        $product = $this->productService->createProduct($input);
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+        $product = $this->productService->createProduct($input, $user);
 
         return $this->json([
             'id'        => $product->getId(),
@@ -79,5 +81,17 @@ class ProductController extends AbstractController
             'stock'     => $product->getStock(),
             'createdAt' => $product->getCreatedAt()->format('Y-m-d H:i:s'),
         ], 201);
+    }
+
+    #[Route('/products/{id}', name: 'products_delete', methods: ['DELETE'])]
+    public function delete(int $id): JsonResponse
+    {
+        $deleted = $this->productService->deleteProduct($id);
+
+        if (!$deleted) {
+            return $this->json(['error' => 'Product not found'], 404);
+        }
+
+        return $this->json(['success' => true]);
     }
 }
